@@ -1,3 +1,5 @@
+"use client";
+
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -63,7 +65,7 @@ const AuthShowcase: React.FC = () => {
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
-    { enabled: sessionData?.user !== undefined },
+    { enabled: sessionData?.user !== undefined }
   );
 
   return (
