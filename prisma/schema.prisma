@@ -11,6 +11,46 @@ datasource db {
   relationMode = "prisma"
 }
 
+model Pizza {
+  id          String       @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  image       String
+  ingredients Ingredient[]
+  orders      Order[]
+}
+
+model Ingredient {
+  id          String  @id @default(cuid())
+  name        String
+  description String
+  image       String
+  pizzas      Pizza[]
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  phone     String
+  pizzas    Pizza[]
+  status    String
+  total     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Table     Table?   @relation(fields: [tableId], references: [id])
+  tableId   String?
+}
+
+model Table {
+  id        String   @id @default(cuid())
+  name      String
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
