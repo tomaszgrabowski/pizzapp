@@ -1,0 +1,18 @@
+- strona glowna
+- strona produktu
+- koszyk zamowienia
+- logowanie
+- rejestracja
+- kategorie
+- szczegoly produktu
+- kontakt
+
+- panel administracyjny
+- widok zamowien
+- dodawanie produktu
+- edycja produktu
+- usuwanie produktu
+- dodawanie kategorii
+- edycja kategorii
+- usuwanie kategorii
+
