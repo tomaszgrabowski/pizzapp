@@ -17,7 +17,6 @@ export const orderRouter = createTRPCRouter({
         address: z.string().optional(),
         phone: z.string().optional(),
         tableId: z.string().optional(),
-        companyId: z.string(),
         dishes: z.array(z.string()).optional(),
       })
     )
@@ -37,7 +36,6 @@ export const orderRouter = createTRPCRouter({
         address: input.address,
         phone: input.phone,
         tableId: input.tableId,
-        companyId: input.companyId,
         dishes: {
           connect: input.dishes?.map((dishId) => ({ id: dishId })),
         },

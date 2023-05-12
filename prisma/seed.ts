@@ -9,22 +9,12 @@ async function seed() {
   await prisma.ingredient.deleteMany();
   await prisma.order.deleteMany();
   await prisma.table.deleteMany();
-  await prisma.company.deleteMany();
 
   // Dodaj syntetyczne dane
   for (let i = 0; i < 10; i++) {
-    const company = await prisma.company.create({
-      data: {
-        name: faker.company.companyName(),
-        address: faker.address.streetAddress(),
-        phone: faker.phone.phoneNumber(),
-      },
-    });
-
     const table = await prisma.table.create({
       data: {
         name: `Table ${i + 1}`,
-        companyId: company.id,
       },
     });
 
@@ -36,7 +26,6 @@ async function seed() {
             name: faker.random.word(),
             description: faker.lorem.sentence(),
             image: faker.image.imageUrl(),
-            companyId: company.id,
           },
         })
       );
@@ -48,7 +37,6 @@ async function seed() {
         description: faker.lorem.sentence(),
         price: parseFloat(faker.commerce.price()),
         image: faker.image.food(),
-        companyId: company.id,
         ingredients: {
           connect: ingredients.map((ingredient) => ({ id: ingredient.id })),
         },
@@ -61,7 +49,6 @@ async function seed() {
         phone: faker.phone.phoneNumber(),
         status: "In progress",
         total: dish.price,
-        companyId: company.id,
         tableId: table.id,
         dishes: {
           connect: { id: dish.id },
