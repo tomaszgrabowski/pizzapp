@@ -1,7 +1,6 @@
 "use client";
 import { api } from "@/utils/api";
 import { Dish } from ".prisma/client";
-import { useCart } from "react-use-cart";
 import Link from "next/link";
 import React, { FC } from "react";
 import { useCartItem } from "@/components/cart/Cart";

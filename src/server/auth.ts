@@ -5,9 +5,12 @@ import {
   type DefaultSession,
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
+import { PrismaClient } from "@prisma/client";
+import { compare } from "@/utils/crypt";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -21,6 +24,7 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       // role: UserRole;
+      isAdministrator: boolean;
     } & DefaultSession["user"];
   }
 
@@ -37,20 +41,65 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
+    async jwt({ token, user }) {
+      if (user) {
+        token.uid = user?.id;
+        token.email = user?.email;
+        token.name = user?.name;
+        token.isAdministrator = false;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session) {
+        (session.user as any).id = token.uid;
+        (session.user as any).email = token.email;
+        (session.user as any).name = token.name;
+        (session.user as any).isAdministrator = token.isAdministrator;
+      }
+      return session;
+    },
+  },
+  secret: "rWhS2jD0shUL/5Ws7HJaYGNawE7uoJlQivSC2OXxFuM=",
+  adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  providers: [
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "text", placeholder: "jsmith@wp.pl" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const prisma = new PrismaClient();
+        const _user = await prisma.user.findFirst({
+          where: {
+            email: credentials?.email,
+          },
+        });
+        if (
+          _user &&
+          credentials &&
+          (await compare(credentials.password, _user.password))
+        ) {
+          return {
+            id: _user.id,
+            email: _user.email,
+            name: _user.name,
+            isAdministrator: false,
+          };
+        }
+        return null;
       },
     }),
-  },
-  adapter: PrismaAdapter(prisma),
-  providers: [
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
     }),
+
     /**
      * ...add more providers here.
      *
@@ -61,6 +110,9 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  pages: {
+    signIn: "/auth/login",
+  },
 };
 
 /**

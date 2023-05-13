@@ -1,21 +1,23 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 const UserAuthLink: FC = () => {
-  const { data } = useSession();
-
+  const session = useSession();
+  useEffect(() => {
+    console.log(session);
+  }, [session]);
   return (
     <>
-      {data?.user && (
+      {session.data?.user?.name && (
         <li>
           <a href="#" onClick={handleLogout}>
-            Logout
+            Logout {session.data?.user?.name}
           </a>
         </li>
       )}
-      {!data?.user && (
+      {!session.data?.user && (
         <>
           <li>
             <a href="#" onClick={handleLogin}>
@@ -23,7 +25,7 @@ const UserAuthLink: FC = () => {
             </a>
           </li>
           <li>
-            <a href="/register">Register</a>
+            <a href="/auth/register">Register</a>
           </li>
         </>
       )}

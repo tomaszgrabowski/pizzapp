@@ -21,10 +21,13 @@
     "@trpc/next": "^10.18.0",
     "@trpc/react-query": "^10.18.0",
     "@trpc/server": "^10.18.0",
+    "@types/bcrypt": "^5.0.0",
+    "bcrypt": "^5.1.0",
     "next": "^13.4.1",
     "next-auth": "^4.21.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.9",
     "react-use-cart": "^1.13.0",
     "superjson": "1.12.2",
     "zod": "^3.21.4"
