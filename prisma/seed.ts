@@ -45,8 +45,6 @@ async function seed() {
 
     await prisma.order.create({
       data: {
-        address: faker.address.streetAddress(),
-        phone: faker.phone.phoneNumber(),
         status: "In progress",
         total: dish.price,
         tableId: table.id,

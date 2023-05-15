@@ -3,22 +3,10 @@
 import React, { FC } from "react";
 import { Item, useCart } from "react-use-cart";
 import { Dish } from ".prisma/client";
-import { api } from "@/utils/api";
+import OrderButtons from "@/components/common/order-buttons/OrderButtons";
 
 const Cart = () => {
-  const { items, emptyCart } = useCart();
-  const handlePlaceOrder = () => {
-    const mutation = api.orders.upsertOrder.useMutation();
-    mutation.mutate({
-      dishes: items.map((item) => item.id),
-    });
-    emptyCart();
-  };
-
-  const clearCart = () => {
-    emptyCart();
-    console.log("Cart: ", items);
-  };
+  const { items } = useCart();
   return (
     <>
       <ul className="flex flex-col flex-wrap">
@@ -28,12 +16,7 @@ const Cart = () => {
           </li>
         ))}
       </ul>
-      <div className="bg-blue-200 p-2" onClick={handlePlaceOrder}>
-        place order
-      </div>
-      <div className="bg-blue-200 p-2" onClick={clearCart}>
-        clear cart
-      </div>
+      <OrderButtons />
     </>
   );
 };
@@ -54,8 +37,7 @@ const CartItem: FC<{ item: Item }> = ({ item }) => {
 };
 
 export const useCartItem = (item: Item) => {
-  const { updateItem, removeItem, getItem, addItem, updateItemQuantity } =
-    useCart();
+  const { updateItem, removeItem, getItem, addItem } = useCart();
 
   const handleRemove = () => {
     const _item = getItem(item.id) as Dish & { quantity: number };

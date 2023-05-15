@@ -13,13 +13,24 @@ datasource db {
 }
 
 model Dish {
-  id          String       @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
   description String
   price       Float
   image       String
   ingredients Ingredient[]
-  orders      Order[]
+  DishOnOrder DishOnOrder[]
+}
+
+model DishOnOrder {
+  id        String   @id @default(cuid())
+  dish      Dish     @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  dishId    String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Ingredient {
@@ -27,20 +38,20 @@ model Ingredient {
   name        String
   description String
   image       String
-  pizzas      Dish[]
+  dishes      Dish[]
 }
 
 model Order {
-  id        String   @id @default(cuid())
-  address   String?
-  phone     String?
-  dishes    Dish[]
-  status    String
-  total     Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  table     Table?   @relation(fields: [tableId], references: [id])
-  tableId   String?
+  id          String        @id @default(cuid())
+  status      String
+  total       Float
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  table       Table?        @relation(fields: [tableId], references: [id])
+  tableId     String?
+  User        User?         @relation(fields: [userId], references: [id])
+  userId      String?
+  DishOnOrder DishOnOrder[]
 }
 
 model Table {
@@ -90,6 +101,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   password      String
+  Order         Order[]
 
   @@index([email])
 }

@@ -41,7 +41,7 @@ const Page = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="-mt-24 flex h-screen flex-col items-center justify-center"
+      className="flex h-screen flex-col items-center justify-center"
     >
       <div className="form-control w-full max-w-xs">
         <label className="label">

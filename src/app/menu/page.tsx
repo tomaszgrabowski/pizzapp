@@ -1,13 +1,20 @@
 import { type NextPage } from "next";
-import React from "react";
+import React, { FC } from "react";
 import RestaurantMenu from "@/components/home/restaurant-menu/RestaurantMenu";
+import Tables from "@/components/home/tables/Tables";
+import OrderButtons from "@/components/common/order-buttons/OrderButtons";
+import { TableProvider } from "@/components/common/table-provider/TableProvider";
 
 const Page: NextPage = () => {
   return (
-    <main>
-      Our menu:
-      <RestaurantMenu />
-    </main>
+    <TableProvider>
+      <main>
+        Our menu:
+        <Tables />
+        <RestaurantMenu />
+        <OrderButtons />
+      </main>
+    </TableProvider>
   );
 };
 

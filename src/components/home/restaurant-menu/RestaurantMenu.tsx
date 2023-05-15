@@ -30,7 +30,7 @@ const MenuItem: FC<{ dish: Dish }> = ({ dish }) => {
   } = useCartItem(dish);
 
   return (
-    <li className="m-2 flex flex-col items-center justify-center border p-2">
+    <li className="m-2 flex flex-grow flex-col items-center justify-center border p-2">
       <Link href={`/dish/${dish.id}`}>{dish.name}</Link>
       <div onClick={handleAddItem}>Add</div>
       <div onClick={handleRemoveItemCompletely}>Remove</div>
