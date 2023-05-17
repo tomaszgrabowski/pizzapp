@@ -48,8 +48,11 @@ async function seed() {
         status: "In progress",
         total: dish.price,
         tableId: table.id,
-        dishes: {
-          connect: { id: dish.id },
+        DishOnOrder: {
+          create: {
+            dishId: dish.id,
+            quantity: 1,
+          },
         },
       },
     });
