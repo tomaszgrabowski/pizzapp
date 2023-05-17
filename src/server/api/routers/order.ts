@@ -1,9 +1,15 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+
+const orderStatus = ["Pending", "Ready", "Delivered"] as const;
+
+const orderValidator = {
+  status: z.enum(orderStatus),
+};
 
 export const orderRouter = createTRPCRouter({
-  insertOrder: publicProcedure
+  insertOrder: protectedProcedure
     .input(
       z.object({
         tableId: z.string(),
@@ -14,7 +20,7 @@ export const orderRouter = createTRPCRouter({
           })
         ),
         userId: z.string().optional(),
-        status: z.enum(["In progress", "Done"]),
+        status: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -54,5 +60,34 @@ export const orderRouter = createTRPCRouter({
       });
 
       return order;
+    }),
+  getOrders: protectedProcedure
+    .input(orderValidator.status)
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.order.findMany({
+        include: {
+          DishOnOrder: {
+            include: {
+              dish: true,
+            },
+          },
+          table: true,
+        },
+        where: {
+          status: input,
+        },
+      });
+    }),
+  changeOrderStatus: protectedProcedure
+    .input(z.object({ status: orderValidator.status, orderId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.order.update({
+        where: {
+          id: input.orderId,
+        },
+        data: {
+          status: input.status,
+        },
+      });
     }),
 });

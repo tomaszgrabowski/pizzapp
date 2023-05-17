@@ -44,11 +44,21 @@ const navManu = [
   {
     name: "Menu",
     path: "/menu",
-    isProtected: false,
+    isProtected: true,
   },
   {
     name: "Cart",
     path: "/cart",
-    isProtected: false,
+    isProtected: true,
+  },
+  {
+    name: "Kitchen",
+    path: "/kitchen",
+    isProtected: true,
+  },
+  {
+    name: "Serve",
+    path: "/serve",
+    isProtected: true,
   },
 ];
